@@ -7,24 +7,23 @@
 
 import SwiftUI
 
+enum CurrentLight {
+    case off, red, yellow, green
+}
+
 struct ContentView: View {
     
-    private let lightIsOn = 1.0
-    private let lightIsOff = 0.3
-    
-    @State private var redLight = CircleView(color: .red, transparency: 0.3)
-    @State private var yellowLight = CircleView(color: .yellow, transparency: 0.3)
-    @State private var greenLight = CircleView(color: .green, transparency: 0.3)
-    
     @State private var tittleButton = "Start"
-    @State private var currentLight = CurrentLight.red
+    @State private var currentLight = CurrentLight.off
     
     var body: some View {
         VStack {
-            redLight
-            yellowLight
-            greenLight
+            CircleView(color: .red, opacity: currentLight == .red ? 1 : 0.3)
+            CircleView(color: .yellow, opacity: currentLight == .yellow ? 1 : 0.3)
+            CircleView(color: .green, opacity: currentLight == .green ? 1 : 0.3)
+            
             Spacer()
+            
             Button(action: startButtonPressed) {
                 Text(tittleButton)
                     .font(.title)
@@ -34,10 +33,8 @@ struct ContentView: View {
             .background(.blue)
             .overlay(Capsule().stroke(lineWidth: 3))
             .clipShape(Capsule())
-            
         }
         .padding()
-        
         }
     private func startButtonPressed() {
         if tittleButton == "Start" {
@@ -45,25 +42,14 @@ struct ContentView: View {
         }
         
         switch currentLight {
-        case .red:
-            redLight.transparency = lightIsOn
-            greenLight.transparency = lightIsOff
-            currentLight = .yellow
-        case .yellow:
-            yellowLight.transparency = lightIsOn
-            redLight.transparency = lightIsOff
-            currentLight = .green
-        case .green:
-            greenLight.transparency = lightIsOn
-            yellowLight.transparency = lightIsOff
-            currentLight = .red
+        case .off: currentLight = .red
+        case .red: currentLight = .yellow
+        case .yellow: currentLight = .green
+        case .green: currentLight = .red
         }
-    }
-    private enum CurrentLight {
-        case red, yellow, green
+
     }
 }
-
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
